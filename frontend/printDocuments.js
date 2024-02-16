@@ -15,7 +15,8 @@ export default function printDocuments() {
                     documentElement.innerHTML = `
                         <h2>${doc.title}</h2>
                         <p>${doc.content}</p>
-                        <p>Author: ${doc.username}</p>
+                        <p>Author: ${doc.authorId}</p>
+                        <p>Created: ${doc.createdAt}</p>
                         <hr>
                     `;
 

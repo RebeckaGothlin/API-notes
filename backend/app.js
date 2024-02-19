@@ -37,12 +37,12 @@ app.get('/documents', (req, res) => {
     })
 });
 
-app.get('/documents/:authorId', (req, res) => {
-    const authorId = req.params.authorId;
+app.get('/documents/:userId', (req, res) => {
+    const userId = req.params.userId;
 
     const sql = 'SELECT * FROM documents WHERE authorId = ?';
 
-    connection.query(sql, [authorId], (err, result) => {
+    connection.query(sql, [userId], (err, result) => {
         if (err) {
             console.log('err', err);
             res.status(500).json({error: 'Server Error'});
@@ -84,6 +84,28 @@ app.get('/users/:userId', (req, res) => {
                 res.json(result[0]);
             } else {
                 res.status(404).json({error: 'User not found'});
+            }
+        }
+    })
+});
+
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+
+    const sql = 'SELECT * FROM users WHERE username = ? AND password = ?';
+
+    connection.query(sql, [username, password], (err, result) => {
+        if (err) {
+            console.log('err', err);
+            res.status(500).json({error: 'Server Error'});
+        } else {
+            if (result.length > 0) {
+                // Om användaren inte finns databasen
+                const user = result[0];
+                res.json({message: 'Login successful', userId: user.userId});
+            } else {
+                // Om användaren inte finns i db
+                res.status(401).json({message: 'Fel username eller password'});
             }
         }
     })

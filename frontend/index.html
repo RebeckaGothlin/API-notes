@@ -4,10 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document system</title>
-    <script src="script.js" type="module"></script>
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="script.js" defer></script>
 </head>
 <body>
     <h1>Document system</h1>
-    <div id="documentContainer"></div>
+    <div id="userForm"></div>
+    <!-- <div id="loginContainer">
+        <h1>Login</h1>
+        <form id="loginForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+    
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+    
+            <button type="button" id="loginBtn">Login</button>
+        </form>
+    </div> -->
+    <div id="documentContainer" class="hidden">
+        <h2>Your Documents</h2>
+        <div id="documentContainer"></div>
+        <div id="usernameDisplay"></div>
+    </div>
 </body>
 </html>

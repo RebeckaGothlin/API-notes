@@ -89,10 +89,17 @@ function printDocuments(userId) {
 								<h2>${doc.title}</h2>
 								<p>${doc.content}</p>
 								<p>Created: ${doc.createdAt}</p>
+                <button class="editBtn" data-doc-id="${doc.id}">Edit</button>
 								<hr>
 						`;
 
           documentContainer.appendChild(documentElement);
+          const editBtn = documentElement.querySelector('.editBtn');
+          if (editBtn) {
+            editBtn.addEventListener('click', () => {
+              openEditorForDocuments(doc.id);
+            })
+          }
         } catch (error) {
           console.error("Error creating HTML element:", error);
         }
@@ -136,7 +143,6 @@ function createEditorButton() {
 
 // OPEN EDITOR
 function openEditor() {
-
   tinymce.init({
     selector: '#editor'
   });
@@ -147,7 +153,7 @@ function openEditor() {
 
 // CLOSE EDITOR
 function closeEditor() {
-  tinymce.get('editor').setContent('');
+  // tinymce.get('editor').setContent('');
   tinymce.remove();
   console.log('editor closed');
   isNewPostOpen = false;
@@ -229,6 +235,82 @@ function hideSaveBtn() {
   if (saveBtn) {
     saveBtn.remove();
   }
+}
+
+// OPEN EDITOR FOR SPECIFIC DOCUMENT
+function openEditorForDocuments(docId) {
+  const userId = localStorage.getItem('user');
+
+ fetch(`http://localhost:3000/documents/${userId}/${docId}`)
+   .then((res) => {
+     if (!res.ok) {
+       if (res.status === 404) {
+         throw new Error(`Document not found with id ${docId}`);
+       } else {
+         throw new Error(`Failed to fetch document. Status: ${res.status}`);
+       }
+     }
+     return res.json();
+   })
+   .then((data) => {
+     const { title, content } = data;
+     openEditor();
+     tinymce.get('editor').setContent(content);
+
+     const saveBtn = documentContainer.querySelector('#saveBtn');
+     if (!saveBtn) {
+       createSaveButtonForUpdate(docId);
+     }
+   })
+   .catch((error) => console.log('Error fetching document:', error));
+}
+
+// CREATE SAVE BUTTON FOR DOCUMENT UPDATE
+function createSaveButtonForUpdate(docId) {
+ const saveBtn = document.createElement('button');
+ saveBtn.id = 'saveBtn';
+ saveBtn.innerText = 'Save changes';
+
+ saveBtn.addEventListener('click', () => {
+   saveUpdatedDocument(docId);
+ });
+
+ documentContainer.appendChild(saveBtn);
+ 
+ hideEditorButton();
+}
+
+// SAVE UPDATED DOCUMENT
+function saveUpdatedDocument(docId) {
+ const title = prompt('Enter the updated title for the document:');
+ const content = tinymce.get('editor').getContent();
+ const userId = localStorage.getItem('user');
+
+ if (title && content) {
+   fetch(`http://localhost:3000/documents/${userId}/${docId}`, {
+     method: 'PATCH',
+     headers: {
+       'Content-Type': 'application/json',
+     },
+     body: JSON.stringify({
+       title: title,
+       content: content,
+     }),
+   })
+     .then((res) => res.json())
+     .then((data) => {
+       console.log('Document updated', data);
+       printDocuments(userId);
+       tinymce.get('editor').setContent('');
+       isNewPostOpen = false;
+       updateEditorButton();
+       hideSaveBtn();
+       closeEditor();
+       hideEditorButton();
+       createEditorButton();
+     })
+     .catch((error) => console.log('Error updating document:', error));
+ }
 }
 
 // INNIT

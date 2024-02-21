@@ -107,6 +107,26 @@ app.patch('/documents/:userId/:id', (req, res) => {
     })
 });
 
+app.delete('/documents/:userId/:id', (req, res) => {
+    const id = req.params.id;
+    const userId = req.params.userId;
+
+    connection.connect((err) => {
+        if (err) console.log('err', err);
+
+        let query = 'DELETE FROM documents WHERE authorId = ? AND id = ?'
+
+        let values = [userId, id];
+
+        connection.query(query, values, (err, data) => {
+            if (err) console.log('err', err);
+
+            console.log('documents', data);
+            res.json({message: 'Document deleted'})
+        })
+    })
+});
+
 app.get('/users/:userId', (req, res) => {
     const userId = req.params.userId;
 

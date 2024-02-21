@@ -69,6 +69,44 @@ app.post('/documents', (req, res) => {
     })
 });
 
+app.get('/documents/:userId/:docId', (req, res) => {
+    const userId = req.params.userId;
+    const docId = req.params.docId;
+  
+    const sql = 'SELECT * FROM documents WHERE authorId = ? AND id = ?';
+    
+    connection.query(sql, [userId, docId], (err, result) => {
+      if (err) {
+        console.log('err', err);
+        res.status(500).json({ error: 'Server Error' });
+      } else {
+        if (result.length > 0) {
+          res.json(result[0]); // Skicka tillbaka dokumentet
+        } else {
+          res.status(404).json({ error: 'Document not found' });
+        }
+      }
+    });
+  });
+
+app.patch('/documents/:userId/:id', (req, res) => {
+    const userId = req.params.userId;
+    const id = req.params.id;
+    const { title, content } = req.body;
+
+    const sql = 'UPDATE documents SET title = ?, content = ? WHERE authorId = ? AND id = ?';
+
+    connection.query(sql, [title, content, userId, id], (err, result) => {
+        if (err) {
+            console.log('err', err);
+            res.status(500).json({error: 'Server Error'});
+        } else {
+            console.log('Document updated:', result);
+            res.json({message: 'Document updated successfully'});
+        }
+    })
+});
+
 app.get('/users/:userId', (req, res) => {
     const userId = req.params.userId;
 

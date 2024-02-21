@@ -90,6 +90,7 @@ function printDocuments(userId) {
 								<p>${doc.content}</p>
 								<p>Created: ${doc.createdAt}</p>
                 <button class="editBtn" data-doc-id="${doc.id}">Edit</button>
+                <button class="deleteBtn" data-doc-id="${doc.id}">Delete</button>
 								<hr>
 						`;
 
@@ -98,6 +99,12 @@ function printDocuments(userId) {
           if (editBtn) {
             editBtn.addEventListener('click', () => {
               openEditorForDocuments(doc.id);
+            })
+          }
+          const deleteBtn = documentElement.querySelector('.deleteBtn');
+          if (deleteBtn) {
+            deleteBtn.addEventListener('click', () => {
+              deleteDocument(doc.id);
             })
           }
         } catch (error) {
@@ -311,6 +318,19 @@ function saveUpdatedDocument(docId) {
      })
      .catch((error) => console.log('Error updating document:', error));
  }
+}
+
+// DELETE DOCUMENT
+function deleteDocument(docId) {
+  const userId = localStorage.getItem('user');
+
+  fetch(`http://localhost:3000/documents/${userId}/${docId}`, {
+    method: 'DELETE'
+  })
+  .then(res => res.json())
+  .then(data => {
+    printDocuments(userId);
+  })
 }
 
 // INNIT

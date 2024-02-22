@@ -84,11 +84,14 @@ function printDocuments(userId) {
       data.forEach((doc) => {
         console.log("Current document:", doc);
         try {
+          const createdAtDate = new Date(doc.createdAt);
+          const formattedCreatedAt = createdAtDate.toLocaleString('sv-SE', { timeZone: 'Europe/Stockholm' });
+
           const documentElement = document.createElement("div");
           documentElement.innerHTML = `
 								<h2>${doc.title}</h2>
 								<p>${doc.content}</p>
-								<p>Created: ${doc.createdAt}</p>
+								<p>Created: ${formattedCreatedAt}</p>
                 <button class="editBtn" data-doc-id="${doc.id}">Edit</button>
                 <button class="deleteBtn" data-doc-id="${doc.id}">Delete</button>
 								<hr>

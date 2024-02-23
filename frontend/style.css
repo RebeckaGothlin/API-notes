@@ -82,6 +82,13 @@ h2 {
     color: black;
     margin-bottom: 10px; 
 }
+.document-title {
+    cursor: pointer;
+}
+
+.document-title:hover {
+    text-decoration: underline;
+}
 
 .content-paragraph {
     color: black;

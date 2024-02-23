@@ -92,7 +92,7 @@ function printDocuments(userId) {
 
           const documentElement = document.createElement("div");
           documentElement.innerHTML = `
-                <h2>${doc.title}</h2>
+                <h2 class="document-title" data-doc-id="${doc.id}">${doc.title}</h2>
                 <img src="pexels-jess-bailey-designs-1007023.jpg">
                 <p class="content-paragraph">${doc.content}</p>
                 <p class="created-date">Created: ${formattedCreatedAt}</p>
@@ -102,6 +102,13 @@ function printDocuments(userId) {
             `;
 
           documentContainer.appendChild(documentElement);
+          const titleElement = documentElement.querySelector('.document-title');
+          if (titleElement) {
+            titleElement.addEventListener('click', () => {
+              showDocument(userId, doc.id);
+            });
+          }
+
           const editBtn = documentElement.querySelector('.editBtn');
           if (editBtn) {
             editBtn.addEventListener('click', () => {
@@ -127,6 +134,66 @@ function printDocuments(userId) {
       updateEditorButton();
     })
     .catch((error) => console.error("Error fetching documents:", error));
+}
+
+function showDocument(userId, docId) {
+  fetch(`http://localhost:3000/documents/${userId}/${docId}`)
+  .then((res) => {
+    if (!res.ok) {
+      if (res.status === 404) {
+        throw new Error(`Document not found with id ${docId}`);
+      } else {
+        throw new Error(`Failed to fetch document. Status: ${res.status}`);
+      }
+    }
+    return res.json();
+  })
+  .then((data) => {
+    const createdAtDate = new Date(data.createdAt);
+    const formattedCreatedAt = createdAtDate.toLocaleString('sv-SE', { timeZone: 'Europe/Stockholm' });
+
+    const documentElement = document.createElement('div');
+    documentElement.innerHTML = `
+      <h2>${data.title}</h2>
+      <img src="pexels-jess-bailey-designs-1007023.jpg">
+      <p class="content-paragraph">${data.content}</p>
+      <p class="created-date">Created: ${formattedCreatedAt}</p>
+      <button class="editBtn" data-doc-id="${data.id}">Edit</button>
+      <button class="deleteBtn" data-doc-id="${data.id}">Delete</button>
+      <hr>
+    `;
+    documentContainer.innerHTML = "";
+
+      const backButton = document.createElement('button');
+      backButton.innerText = 'All Documents';
+      backButton.addEventListener('click', () => {
+        printDocuments(userId);
+        createEditorButton();
+      });
+      documentContainer.innerHTML = "";
+      documentContainer.appendChild(backButton);
+      documentContainer.appendChild(documentElement);
+
+      const editBtn = documentElement.querySelector('.editBtn');
+      if (editBtn) {
+        editBtn.addEventListener('click', () => {
+          if (isEditorOpen) {
+            closeEditor();
+            isEditorOpen = false;
+          } else {
+            openEditorForDocuments(data.id);
+            isEditorOpen = true;
+          }
+        });
+      }
+      const deleteBtn = documentElement.querySelector('.deleteBtn');
+      if (deleteBtn) {
+        deleteBtn.addEventListener('click', () => {
+          deleteDocument(data.id);
+        });
+      }
+  })
+  .catch((error) => console.log('Error fetching document:', error));
 }
 
 
@@ -331,13 +398,12 @@ function saveUpdatedDocument(docId) {
     .then((res) => res.json())
     .then((data) => {
       console.log('Document updated', data);
-      printDocuments(userId);
+      showDocument();
       tinymce.get('editor').setContent('');
       isEditorOpen = false;
       updateEditorButton();
       hideSaveBtn();
       closeEditor();
-      createEditorButton();
     })
     .catch((error) => console.log('Error updating document:', error));
   }
@@ -364,6 +430,7 @@ if (localStorage.getItem("user")) {
   printDocuments(userId);
   printLogoutBtn();
   createEditorButton();
+  showDocument(userId, docId);
 } else {
   printLoginForm();
 }

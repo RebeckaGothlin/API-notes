@@ -1,3 +1,137 @@
 .hidden {
     display: none;
 }
+
+.playfair-display {
+  font-family: "Playfair Display", serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.dancing-script {
+    font-family: "Dancing Script", cursive;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+   
+
+body {
+    font-family: "Playfair Display", serif; 
+    background-color: #e2e2e2;
+    color: black; 
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+    color: black;
+}
+
+img {
+    width: 600px;
+}
+
+#userForm {
+    text-align: center;
+    margin: 20px auto;
+}
+
+input {
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+button {
+    font-family: "Playfair Display", serif;
+    text-transform: uppercase;
+    padding: 5px;
+    margin: 5px;
+    background-color: #90a8a4;
+    color: #fff;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #33504b;
+}
+
+#documentContainer {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: white;
+    text-align: center;
+    padding: 20px; 
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.document {
+    background-color: #fff;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    font-family: "Dancing Script", cursive;
+    color: black;
+    margin-bottom: 10px; 
+}
+
+.content-paragraph {
+    color: black;
+}
+
+.created-date {
+    font-size: 0.7rem;
+}
+
+.editBtn,
+.deleteBtn {
+    background-color: #90a8a4;
+    color: #fff;
+    border: none;
+    padding: 5px;
+    width: 80px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.editBtn:hover,
+.deleteBtn:hover {
+    background-color: #33504b;
+}
+
+
+#editorBtn {
+    background-color: #90a8a4;
+    color: #fff;
+    border: none;
+    padding: 5px;
+    width: 80px;
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+#editorBtn:hover {
+    background-color: #33504b;
+}
+
+#saveBtn {
+    background-color: #90a8a4;
+    color: #fff;
+    border: none;
+    padding: 5px;
+    width: 80px;
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+#saveBtn:hover {
+    background-color: #33504b;
+}

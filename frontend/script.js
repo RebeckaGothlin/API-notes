@@ -93,8 +93,9 @@ function printDocuments(userId) {
           const documentElement = document.createElement("div");
           documentElement.innerHTML = `
                 <h2>${doc.title}</h2>
-                <p>${doc.content}</p>
-                <p>Created: ${formattedCreatedAt}</p>
+                <img src="pexels-jess-bailey-designs-1007023.jpg">
+                <p class="content-paragraph">${doc.content}</p>
+                <p class="created-date">Created: ${formattedCreatedAt}</p>
                 <button class="editBtn" data-doc-id="${doc.id}">Edit</button>
                 <button class="deleteBtn" data-doc-id="${doc.id}">Delete</button>
                 <hr>

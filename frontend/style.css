@@ -28,6 +28,13 @@ h1 {
     color: black;
 }
 
+.login-image {
+    width: 550px;
+    padding-top: 20px;
+    display: block;
+    margin: 0 auto;
+}
+
 img {
     width: 600px;
 }

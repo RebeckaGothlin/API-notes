@@ -19,6 +19,12 @@ function printLoginForm() {
   let loginBtn = document.createElement("button");
   loginBtn.innerText = "Log in";
 
+  let loginImage = document.createElement("img");
+  loginImage.src = "pexels-anete-lusina-4792288.jpg"; // Byt ut mot din faktiska bildsökväg
+  loginImage.alt = "Login Image";
+  loginImage.classList.add('login-image');
+
+
   loginBtn.addEventListener("click", () => {
     let sendUser = {
       username: inputUsername.value,
@@ -47,7 +53,7 @@ function printLoginForm() {
         }
       });
   });
-  userForm.append(inputUsername, inputPassword, loginBtn);
+  userForm.append(inputUsername, inputPassword, loginBtn, loginImage);
 }
 
 // LOG OUT

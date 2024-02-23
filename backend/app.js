@@ -76,18 +76,18 @@ app.get('/documents/:userId/:docId', (req, res) => {
     const sql = 'SELECT * FROM documents WHERE authorId = ? AND id = ?';
     
     connection.query(sql, [userId, docId], (err, result) => {
-      if (err) {
-        console.log('err', err);
-        res.status(500).json({ error: 'Server Error' });
-      } else {
-        if (result.length > 0) {
-          res.json(result[0]); // Skicka tillbaka dokumentet
+        if (err) {
+            console.log('err', err);
+            res.status(500).json({ error: 'Server Error' });
         } else {
-          res.status(404).json({ error: 'Document not found' });
+            if (result.length > 0) {
+            res.json(result[0]); // Skicka tillbaka dokumentet
+            } else {
+            res.status(404).json({ error: 'Document not found' });
+            }
         }
-      }
     });
-  });
+});
 
 app.patch('/documents/:userId/:id', (req, res) => {
     const userId = req.params.userId;

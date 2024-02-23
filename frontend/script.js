@@ -96,8 +96,6 @@ function printDocuments(userId) {
                 <img src="pexels-jess-bailey-designs-1007023.jpg">
                 <p class="content-paragraph">${doc.content}</p>
                 <p class="created-date">Created: ${formattedCreatedAt}</p>
-                <button class="editBtn" data-doc-id="${doc.id}">Edit</button>
-                <button class="deleteBtn" data-doc-id="${doc.id}">Delete</button>
                 <hr>
             `;
 
@@ -107,25 +105,6 @@ function printDocuments(userId) {
             titleElement.addEventListener('click', () => {
               showDocument(userId, doc.id);
             });
-          }
-
-          const editBtn = documentElement.querySelector('.editBtn');
-          if (editBtn) {
-            editBtn.addEventListener('click', () => {
-              if (isEditorOpen) {
-                closeEditor();
-                isEditorOpen = false;
-              } else {
-                openEditorForDocuments(doc.id);
-                isEditorOpen = true;
-              }
-            })
-          }
-          const deleteBtn = documentElement.querySelector('.deleteBtn');
-          if (deleteBtn) {
-            deleteBtn.addEventListener('click', () => {
-              deleteDocument(doc.id);
-            })
           }
         } catch (error) {
           console.error("Error creating HTML element:", error);

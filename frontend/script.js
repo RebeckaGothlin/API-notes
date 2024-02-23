@@ -64,7 +64,6 @@ function printLogoutBtn() {
     hideSaveBtn();
     closeEditor();
   });
-
   userForm.appendChild(logoutBtn);
 }
 
@@ -83,6 +82,8 @@ function printDocuments(userId) {
     .then((res) => res.json())
     .then((data) => {
       console.log("documents", data);
+
+      data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
       data.forEach((doc) => {
         console.log("Current document:", doc);
@@ -116,6 +117,12 @@ function printDocuments(userId) {
 }
 
 function showDocument(userId, docId) {
+  console.log('showDocument - userId:', userId, 'docId:', docId);
+
+  if (!userId || !docId) {
+    console.error('Invalid userId or docId');
+    return;
+  }
   fetch(`http://localhost:3000/documents/${userId}/${docId}`)
   .then((res) => {
     if (!res.ok) {
@@ -213,7 +220,7 @@ function createEditorButton() {
 // OPEN EDITOR
 function openEditor() {
   tinymce.init({
-    selector: '#editor'
+    selector: '#editor',
   });
   console.log('Editor opened');
   isNewPostOpen = true;
@@ -232,6 +239,11 @@ function closeEditor() {
     saveBtnAdded = false;
     hideSaveBtn();
     updateEditorButton();
+
+    const titleInput = document.querySelector('.title-input');
+    if (titleInput) {
+      titleInput.remove();
+    }
   }
 }
 
@@ -325,6 +337,13 @@ fetch(`http://localhost:3000/documents/${userId}/${docId}`)
   .then((data) => {
     const { title, content } = data;
 
+    const titleInput = document.createElement("input");
+    titleInput.value = title;
+    titleInput.placeholder = "Title";
+    titleInput.classList.add("title-input");
+
+    documentContainer.appendChild(titleInput);
+
     tinymce.init({
     selector: '#editor',
     setup: function (editor) {
@@ -337,28 +356,90 @@ fetch(`http://localhost:3000/documents/${userId}/${docId}`)
 
     const saveBtn = documentContainer.querySelector('#saveBtn');
     if (!saveBtn) {
-      createSaveButtonForUpdate(docId);
+      createSaveButtonForUpdate(docId, userId, titleInput);
     }
   })
   .catch((error) => console.log('Error fetching document:', error));
 }
 
 // CREATE SAVE BUTTON FOR DOCUMENT UPDATE
-function createSaveButtonForUpdate(docId) {
+function createSaveButtonForUpdate(docId, userId, titleInput) {
   const saveBtn = document.createElement('button');
   saveBtn.id = 'saveBtn';
   saveBtn.innerText = 'Save changes';
 
   saveBtn.addEventListener('click', () => {
-    saveUpdatedDocument(docId);
+    const updatedTitle = titleInput.value || showTitlePrompt(titleInput.placeholder);
+    const content = tinymce.get('editor').getContent();
+
+    if (updatedTitle && content) {
+      fetch(`http://localhost:3000/documents/${userId}/${docId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: updatedTitle,
+          content: content,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log('Document updated', data);
+          showDocument(userId, docId);
+          tinymce.get('editor').setContent('');
+          isEditorOpen = false;
+          updateEditorButton();
+          hideSaveBtn();
+          closeEditor();
+        })
+        .catch((error) => console.log('Error updating document:', error));
+    }
   });
 
   documentContainer.appendChild(saveBtn);
- 
 }
+
+function showTitlePrompt(placeholder) {
+  const titleModal = document.createElement('div');
+  titleModal.className = 'title-modal';
+  
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.placeholder = placeholder;
+
+  const saveButton = document.createElement('button');
+  saveButton.innerText = 'Save';
+  saveButton.addEventListener('click', () => {
+    closeTitlePrompt();
+  });
+
+  titleModal.appendChild(input);
+  titleModal.appendChild(saveButton);
+
+  document.body.appendChild(titleModal);
+
+  return new Promise((resolve) => {
+    saveButton.addEventListener('click', () => {
+      resolve(input.value);
+      closeTitlePrompt();
+    });
+  });
+}
+
+// Stäng modal
+function closeTitlePrompt() {
+  const titleModal = document.querySelector('.title-modal');
+  if (titleModal) {
+    titleModal.remove();
+  }
+}
+
 
 // SAVE UPDATED DOCUMENT
 function saveUpdatedDocument(docId) {
+  console.log('saveUpdatedDocument - docId:', docId);
+
   const title = prompt('Enter the updated title for the document:');
   const content = tinymce.get('editor').getContent();
   const userId = localStorage.getItem('user');
@@ -377,7 +458,7 @@ function saveUpdatedDocument(docId) {
     .then((res) => res.json())
     .then((data) => {
       console.log('Document updated', data);
-      showDocument();
+      showDocument(userId, docId);
       tinymce.get('editor').setContent('');
       isEditorOpen = false;
       updateEditorButton();
@@ -406,10 +487,22 @@ function deleteDocument(docId) {
 // INNIT
 if (localStorage.getItem("user")) {
   const userId = localStorage.getItem("user");
+
+  fetch(`http://localhost:3000/documents/${userId}`)
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.length > 0) {
+        const firstDocId = data[0].id;
+        showDocument(userId, firstDocId);
+      } else {
+        console.log("No documents found");
+      }
+    })
+    .catch((error) => console.error("Error fetching documents:", error));
+
   printDocuments(userId);
   printLogoutBtn();
   createEditorButton();
-  showDocument(userId, docId);
 } else {
   printLoginForm();
 }

@@ -114,7 +114,6 @@ h2 {
     background-color: #33504b;
 }
 
-
 #editorBtn {
     background-color: #90a8a4;
     color: #fff;
@@ -134,11 +133,21 @@ h2 {
     color: #fff;
     border: none;
     padding: 5px;
-    width: 80px;
+    width: 120px;
     margin: 10px 0;
     cursor: pointer;
 }
 
 #saveBtn:hover {
     background-color: #33504b;
+}
+
+.title-input {
+    height: 30px;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
 }

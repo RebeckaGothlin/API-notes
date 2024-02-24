@@ -22,10 +22,10 @@ This project is a web application that allows registered users to log in, view t
 
 ## 📷 Screenshots
 
-<img src="images/login-page.png" width="500">
-<img src="images/all-documents.png" width="500">
-<img src="images/one-document.png" width="500">
-<img src="images/edit.png" width="500">
+<img src="frontend/images/login-page.png" width="500">
+<img src="frontend/images/all-documents.png" width="500">
+<img src="frontend/images/one-document.png" width="500">
+<img src="frontend/images/edit.png" width="500">
 
 ## Created by
 

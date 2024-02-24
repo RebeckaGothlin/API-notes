@@ -20,7 +20,7 @@ function printLoginForm() {
   loginBtn.innerText = "Log in";
 
   let loginImage = document.createElement("img");
-  loginImage.src = "pexels-anete-lusina-4792288.jpg"; // Byt ut mot din faktiska bildsökväg
+  loginImage.src = "images/pexels-anete-lusina-4792288.jpg"; // Byt ut mot din faktiska bildsökväg
   loginImage.alt = "Login Image";
   loginImage.classList.add('login-image');
 
@@ -40,8 +40,6 @@ function printLoginForm() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("Post user", data);
-
         if (data.userId) {
           localStorage.setItem("user", data.userId);
           documentContainer.classList.remove("hidden");
@@ -87,12 +85,9 @@ function printDocuments(userId) {
   fetch(`http://localhost:3000/documents/${userId}`)
     .then((res) => res.json())
     .then((data) => {
-      console.log("documents", data);
-
       data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
       data.forEach((doc) => {
-        console.log("Current document:", doc);
         try {
           const createdAtDate = new Date(doc.createdAt);
           const formattedCreatedAt = createdAtDate.toLocaleString('sv-SE', { timeZone: 'Europe/Stockholm' });
@@ -100,7 +95,7 @@ function printDocuments(userId) {
           const documentElement = document.createElement("div");
           documentElement.innerHTML = `
                 <h2 class="document-title" data-doc-id="${doc.id}">${doc.title}</h2>
-                <img src="pexels-jess-bailey-designs-1007023.jpg">
+                <img src="images/pexels-jess-bailey-designs-1007023.jpg">
                 <p class="content-paragraph">${doc.content}</p>
                 <p class="created-date">Created: ${formattedCreatedAt}</p>
                 <hr>
@@ -123,9 +118,7 @@ function printDocuments(userId) {
 }
 
 function showDocument(userId, docId) {
-  console.log('showDocument - userId:', userId, 'docId:', docId);
-
-  if (!userId || !docId) {
+   if (!userId || !docId) {
     console.error('Invalid userId or docId');
     return;
   }
@@ -147,7 +140,7 @@ function showDocument(userId, docId) {
     const documentElement = document.createElement('div');
     documentElement.innerHTML = `
       <h2>${data.title}</h2>
-      <img src="pexels-jess-bailey-designs-1007023.jpg">
+      <img src="images/pexels-jess-bailey-designs-1007023.jpg">
       <p class="content-paragraph">${data.content}</p>
       <p class="created-date">Created: ${formattedCreatedAt}</p>
       <button class="editBtn" data-doc-id="${data.id}">Edit</button>
@@ -214,9 +207,7 @@ function createEditorButton() {
         saveBtnAdded = true;
       }
     }
-    console.log('isNewPostOpen before updateEditorButton:', isNewPostOpen);
     updateEditorButton();
-    console.log('isNewPostOpen after updateEditorButton:', isNewPostOpen);
   });
   documentContainer.appendChild(editorBtn);
   closeEditor();
@@ -228,7 +219,6 @@ function openEditor() {
   tinymce.init({
     selector: '#editor',
   });
-  console.log('Editor opened');
   isNewPostOpen = true;
   updateEditorButton();
 }
@@ -236,10 +226,8 @@ function openEditor() {
 // CLOSE EDITOR
 function closeEditor() {
   if (isNewPostOpen) {
-    console.log('isEditorOpen before closing editor:', isEditorOpen);
     tinymce.get('editor').setContent('');
     tinymce.remove();
-    console.log('editor closed');
     isNewPostOpen = false;
     isEditorOpen = false;
     saveBtnAdded = false;
@@ -277,12 +265,16 @@ function createSaveButton() {
 }
 
 // SAVE NEW DOCUMENT
+// SAVE NEW DOCUMENT
 function saveDocument() {
   let title, content;
 
   if (isNewPostOpen) {
-    content = tinymce.get('editor').getContent();
-    title = prompt('Ange en titel för dokumentet:');
+    const editor = tinymce.get('editor');
+    if (editor) {
+      content = editor.getContent();
+      title = prompt('Ange en titel för dokumentet:');
+    }
   }
 
   if (title && content) {
@@ -301,9 +293,11 @@ function saveDocument() {
     })
     .then((res) => res.json())
     .then((data) => {
-      console.log('Document saved', data);
       printDocuments(userId);
-      tinymce.get('editor').setContent('');
+      const editor = tinymce.get('editor');
+      if (editor) {
+        editor.setContent('');
+      }
       isNewPostOpen = false;
       updateEditorButton();
       hideSaveBtn();
@@ -313,6 +307,7 @@ function saveDocument() {
     .catch((error) => console.log('Error saving document:', error));
   }
 }
+
 
 // HIDE SAVE BUTTON
 function hideSaveBtn() {
@@ -493,19 +488,6 @@ function deleteDocument(docId) {
 // INNIT
 if (localStorage.getItem("user")) {
   const userId = localStorage.getItem("user");
-
-  fetch(`http://localhost:3000/documents/${userId}`)
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.length > 0) {
-        const firstDocId = data[0].id;
-        showDocument(userId, firstDocId);
-      } else {
-        console.log("No documents found");
-      }
-    })
-    .catch((error) => console.error("Error fetching documents:", error));
-
   printDocuments(userId);
   printLogoutBtn();
   createEditorButton();

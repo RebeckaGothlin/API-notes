@@ -21,6 +21,7 @@ app.use(cors());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
+// GET ALL DOCUMENTS
 app.get('/documents', (req, res) => {
     connection.connect((err) => {
         if (err) console.log('err', err);
@@ -37,6 +38,7 @@ app.get('/documents', (req, res) => {
     })
 });
 
+// GET DOCUMENTS BASED ON USERID
 app.get('/documents/:userId', (req, res) => {
     const userId = req.params.userId;
 
@@ -53,6 +55,7 @@ app.get('/documents/:userId', (req, res) => {
     })
 });
 
+// CREATE NEW DOCUMENT
 app.post('/documents', (req, res) => {
     const { title, content, authorId } = req.body;
 
@@ -69,6 +72,7 @@ app.post('/documents', (req, res) => {
     })
 });
 
+// GET SPECIFIC DOCUMENT BASED ON USERID AND DOC ID
 app.get('/documents/:userId/:docId', (req, res) => {
     const userId = req.params.userId;
     const docId = req.params.docId;
@@ -81,7 +85,7 @@ app.get('/documents/:userId/:docId', (req, res) => {
             res.status(500).json({ error: 'Server Error' });
         } else {
             if (result.length > 0) {
-            res.json(result[0]); // Skicka tillbaka dokumentet
+            res.json(result[0]); 
             } else {
             res.status(404).json({ error: 'Document not found' });
             }
@@ -89,6 +93,7 @@ app.get('/documents/:userId/:docId', (req, res) => {
     });
 });
 
+// UPDATE DOCUMENT BASED ON USERID AND DOC ID
 app.patch('/documents/:userId/:id', (req, res) => {
     const userId = req.params.userId;
     const id = req.params.id;
@@ -107,6 +112,7 @@ app.patch('/documents/:userId/:id', (req, res) => {
     })
 });
 
+// DELETE DOCUMENT 
 app.delete('/documents/:userId/:id', (req, res) => {
     const id = req.params.id;
     const userId = req.params.userId;
@@ -127,6 +133,7 @@ app.delete('/documents/:userId/:id', (req, res) => {
     })
 });
 
+// GET USER
 app.get('/users/:userId', (req, res) => {
     const userId = req.params.userId;
 
@@ -147,6 +154,7 @@ app.get('/users/:userId', (req, res) => {
     })
 });
 
+// LOGIN USER
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
 
@@ -158,11 +166,9 @@ app.post('/login', (req, res) => {
             res.status(500).json({error: 'Server Error'});
         } else {
             if (result.length > 0) {
-                // Om användaren inte finns databasen
                 const user = result[0];
                 res.json({message: 'Login successful', userId: user.userId});
             } else {
-                // Om användaren inte finns i db
                 res.status(401).json({message: 'Fel username eller password'});
             }
         }

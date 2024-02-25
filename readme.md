@@ -18,6 +18,7 @@ Feel free to explore each directory for more details on the specific files and c
 ### 1. Clone the repository
 ### 2. npm install
 ### 3. npm start / nodemon start
+### 4. Start live server
 Import mock data from the "mock-data" folder in the root of the project.
 
 ## 📂 Database Dump

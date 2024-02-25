@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 24, 2024 at 08:54 AM
+-- Generation Time: Feb 25, 2024 at 12:03 PM
 -- Server version: 5.7.24
 -- PHP Version: 8.0.1
 
@@ -41,17 +41,15 @@ CREATE TABLE `documents` (
 --
 
 INSERT INTO `documents` (`id`, `title`, `content`, `authorId`, `delete`, `createdAt`) VALUES
-(3, 'Fredag morgon', '<p>Idag &auml;r det fredag och klockan &auml;r 10 p&aring; morgonen. Idag &auml;r det soligt och lite mildare. En h&auml;rlig vinterdag. Och snart &auml;r det v&aring;r! Det ser jag fram emot s&aring; mycket.</p>', 1, 0, '2024-02-16 09:03:02'),
+(3, 'Fredag morgon', '<p>Idag &auml;r det fredag och klockan &auml;r 10 p&aring; morgonen. Idag &auml;r det soligt och lite mildare. En h&auml;rlig vinterdag. Och snart &auml;r det v&aring;r! Det ser jag fram emot.</p>', 1, 0, '2024-02-16 09:03:02'),
 (4, 'Mitt andra inlägg', 'Det här blir mitt andra blogginlägg', 1, 0, '2024-02-16 09:03:02'),
 (5, 'Snart helg', 'Snart är det helg och vi är lediga!', 1, 0, '2024-02-16 10:36:02'),
-(6, 'Måndag', '<p>Idag &auml;r det en ny vecka...</p>', 2, 0, '2024-02-19 08:41:19'),
 (71, 'Snöoväder', '<h1>Sn&ouml;igt</h1>\n<p>Idag sn&ouml;ar det f&ouml;r fullt.</p>', 2, 0, '2024-02-22 13:33:13'),
 (91, 'Good day', '<h1>God dagens</h1>\n<p>God dag!</p>', 2, 0, '2024-02-23 09:51:33'),
-(96, 'Helg', '<p>Snart helg igen. H&auml;rligt!</p>', 1, 0, '2024-02-23 13:33:17'),
 (97, 'Morning', '<p>God morgon, l&ouml;rdag!</p>', 1, 0, '2024-02-24 07:08:55'),
 (98, 'First post', '<p>This is my first post.</p>', 3, 0, '2024-02-24 07:10:25'),
 (99, 'Saturday morning', '<p>It\'s Saturday today.</p>', 3, 0, '2024-02-24 07:12:00'),
-(100, 'Sunny day', '<p>Good morning, the sun is shining.</p>', 3, 0, '2024-02-24 07:15:34');
+(100, 'Sunny day', '<p>Good morning, the sun is shining..</p>', 3, 0, '2024-02-24 07:15:34');
 
 -- --------------------------------------------------------
 
@@ -99,7 +97,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `documents`
 --
 ALTER TABLE `documents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
 
 --
 -- AUTO_INCREMENT for table `users`

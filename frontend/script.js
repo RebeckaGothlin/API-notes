@@ -1,14 +1,54 @@
 
 let documentContainer = document.querySelector("#documentContainer");
 let userForm = document.querySelector("#userForm");
+let signupForm = document.querySelector('#signupForm');
 
 
 /*
 -----------------------LOGIN LOG OUT-----------------------
 */
 
+// SIGN UP
+
+function printSignup() {
+  if (localStorage.getItem('user')) {
+    signupForm.style.display = 'none';
+    return;
+  }
+  signupForm.innerHTML = "";
+
+  let signupUsername = document.createElement('input');
+  signupUsername.placeholder = 'Username';
+  let signupPassword = document.createElement('input');
+  signupPassword.placeholder = 'Password';
+  signupPassword.type = 'password';
+  let signupBtn = document.createElement('button');
+  signupBtn.innerText = 'Sign Up';
+
+  signupBtn.addEventListener('click', () => {
+    let sendNewUser = {
+      username: signupUsername.value,
+      password: signupPassword.value,
+    };
+    fetch('http://localhost:3000/users', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(sendNewUser),
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+
+    })
+  })
+  signupForm.append(signupUsername, signupPassword, signupBtn);
+}
+
+
 // LOGIN
-function printLoginForm() {
+async function printLoginForm() {
   userForm.innerHTML = "";
 
   let inputUsername = document.createElement("input");
@@ -25,32 +65,37 @@ function printLoginForm() {
   loginImage.classList.add('login-image');
 
 
-  loginBtn.addEventListener("click", () => {
+  loginBtn.addEventListener("click", async () => {
     let sendUser = {
       username: inputUsername.value,
       password: inputPassword.value,
     };
-
-    fetch("http://localhost:3000/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(sendUser),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.userId) {
-          localStorage.setItem("user", data.userId);
-          documentContainer.classList.remove("hidden");
-          printDocuments(data.userId);
-          printLogoutBtn();
-          createEditorButton();
-        } else {
-          alert("Fel inlogg");
-        }
+    try {
+      const res = await fetch("http://localhost:3000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(sendUser),
       });
+
+      const data = await res.json();
+
+      if (data.userId) {
+        localStorage.setItem("user", data.userId);
+        documentContainer.classList.remove("hidden");
+        printDocuments(data.userId);
+        printLogoutBtn();
+        createEditorButton();
+        await printSignup();
+      } else {
+        alert("Fel inlogg");
+      }
+    } catch (error) {
+      console.error("Error logging in:", error);
+    }
   });
+
   userForm.append(inputUsername, inputPassword, loginBtn, loginImage);
 }
 
@@ -63,10 +108,11 @@ function printLogoutBtn() {
 
   logoutBtn.addEventListener("click", () => {
     localStorage.removeItem("user");
-    printLoginForm();
+    printSignup();
     documentContainer.classList.add("hidden");
     hideSaveBtn();
     closeEditor();
+    printLoginForm();
   });
   userForm.appendChild(logoutBtn);
 }
@@ -194,6 +240,7 @@ let saveBtn;
 function createEditorButton() {
   const editorBtn = document.createElement('button');
   editorBtn.id = 'editorBtn';
+  editorBtn.classList.add('editor-button');
   editorBtn.innerText = 'New Post';
 
   editorBtn.addEventListener('click', () => {
@@ -218,6 +265,11 @@ function createEditorButton() {
 function openEditor() {
   tinymce.init({
     selector: '#editor',
+    plugins: 'textcolor colorpicker',
+    toolbar: 'undo redo | formatselect | ' +
+    'bold italic underline | forecolor backcolor | alignleft aligncenter alignright alignjustify | ' +
+    'bullist numlist outdent indent | ' +
+    'removeformat | help',
   });
   isNewPostOpen = true;
   updateEditorButton();
@@ -250,11 +302,11 @@ function updateEditorButton() {
 }
 
 
-
 // SAVE NEW DOCUMENT BUTTON
 function createSaveButton() {
   const saveBtn = document.createElement('button');
   saveBtn.id = 'saveBtn';
+  saveBtn.classList.add('save-button');
   saveBtn.innerText = 'Save';
 
   saveBtn.addEventListener('click', () => {
@@ -264,7 +316,6 @@ function createSaveButton() {
   documentContainer.appendChild(saveBtn);
 }
 
-// SAVE NEW DOCUMENT
 // SAVE NEW DOCUMENT
 function saveDocument() {
   let title, content;
@@ -318,8 +369,6 @@ function hideSaveBtn() {
 }
 
 
-
-
 // OPEN EDITOR FOR SPECIFIC DOCUMENT
 function openEditorForDocuments(docId) {
   const userId = localStorage.getItem('user');
@@ -347,6 +396,11 @@ fetch(`http://localhost:3000/documents/${userId}/${docId}`)
 
     tinymce.init({
     selector: '#editor',
+    plugins: 'textcolor colorpicker',
+    toolbar: 'undo redo | formatselect | ' +
+    'bold italic underline | forecolor backcolor | alignleft aligncenter alignright alignjustify | ' +
+    'bullist numlist outdent indent | ' +
+    'removeformat | help',
     setup: function (editor) {
       editor.on('init', function () {
         editor.setContent(content);
@@ -493,4 +547,5 @@ if (localStorage.getItem("user")) {
   createEditorButton();
 } else {
   printLoginForm();
+  printSignup();  
 }

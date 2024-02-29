@@ -39,7 +39,12 @@ img {
     width: 600px;
 }
 
-#userForm {
+.signup-form {
+    text-align: center;
+    margin: 20px auto;
+}
+
+.user-form {
     text-align: center;
     margin: 20px auto;
 }
@@ -67,7 +72,7 @@ button:hover {
     background-color: #33504b;
 }
 
-#documentContainer {
+.document-container {
     max-width: 600px;
     margin: 0 auto;
     background-color: white;
@@ -121,7 +126,7 @@ h2 {
     background-color: #33504b;
 }
 
-#editorBtn {
+.editor-button {
     background-color: #90a8a4;
     color: #fff;
     border: none;
@@ -131,11 +136,11 @@ h2 {
     cursor: pointer;
 }
 
-#editorBtn:hover {
+.editor-button:hover {
     background-color: #33504b;
 }
 
-#saveBtn {
+.save-button {
     background-color: #90a8a4;
     color: #fff;
     border: none;
@@ -145,7 +150,7 @@ h2 {
     cursor: pointer;
 }
 
-#saveBtn:hover {
+.save-button:hover {
     background-color: #33504b;
 }
 

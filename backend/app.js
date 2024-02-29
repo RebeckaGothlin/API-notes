@@ -117,20 +117,16 @@ app.delete('/documents/:userId/:id', (req, res) => {
     const id = req.params.id;
     const userId = req.params.userId;
 
-    connection.connect((err) => {
+    let query = 'DELETE FROM documents WHERE authorId = ? AND id = ?';
+
+    let values = [userId, id];
+
+    connection.query(query, values, (err, data) => {
         if (err) console.log('err', err);
 
-        let query = 'DELETE FROM documents WHERE authorId = ? AND id = ?'
-
-        let values = [userId, id];
-
-        connection.query(query, values, (err, data) => {
-            if (err) console.log('err', err);
-
-            console.log('documents', data);
-            res.json({message: 'Document deleted'})
-        })
-    })
+        console.log('documents', data);
+        res.json({ message: 'Document deleted' });
+    });
 });
 
 // GET USER
@@ -150,6 +146,22 @@ app.get('/users/:userId', (req, res) => {
             } else {
                 res.status(404).json({error: 'User not found'});
             }
+        }
+    })
+});
+
+app.post('/users', (req, res) => {
+    const { username, password } = req.body;
+
+    const sql = 'INSERT INTO users (username, password) VALUES (?, ?)';
+
+    connection.query(sql, [username, password], (err, result) => {
+        if (err) {
+            console.log('err', err);
+            res.status(500).json({error: 'Server error'});
+        } else {
+            console.log('User created:', result);
+            res.status(201).json({message: 'User created successfully'});
         }
     })
 });
